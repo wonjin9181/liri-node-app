@@ -4,9 +4,14 @@ var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 var moment = require("moment")
 var axios = require("axios")
+var fs = require("fs")
 
 
 var action = process.argv[2]
+
+var input;
+
+console.log(action)
 
 switch (action) {
 
@@ -30,10 +35,10 @@ switch (action) {
 
 function getConcert() {
 
-    var artist = process.argv[3]
+    input = process.argv[3]
     console.log(process.argv[3])
 
-    queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
+    queryUrl = "https://rest.bandsintown.com/artists/" + input + "/events?app_id=codingbootcamp"
 
     axios.get(queryUrl).then(
         function (response) {
@@ -67,20 +72,18 @@ function getConcert() {
 
 function spotifySong() {
 
-    var song
-
     if (process.argv[3] !== "") {
-        song = process.argv[3];
+        input = process.argv[3];
     }
 
     if (!process.argv[3]) {
-        song = "the sign"
+        input = "the sign"
     }
 
-    console.log(song)
+    console.log(input)
 
     spotify
-        .search({ type: 'track', query: song, limit: 1 })
+        .search({ type: 'track', query: input, limit: 1 })
 
         .then(function (response) {
             // console.log(response.tracks.items[0]);
@@ -118,21 +121,19 @@ function spotifySong() {
 
 function movieThis() {
 
-    var movieName;
-
     if (process.argv[3] !== "") {
-        movieName = process.argv[3];
+        input = process.argv[3];
     }
     if (!process.argv[3]) {
-        movieName = "Mr. Nobody"
+        input = "Mr. Nobody"
     }
 
 
-    queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    queryUrl = "http://www.omdbapi.com/?t=" + input + "&y=&plot=short&apikey=trilogy";
 
     axios.get(queryUrl).then(
         function (response) {
-            console.log(response.data)
+            // console.log(response.data)
             console.log("==============")
             console.log("Title: " + response.data.Title)
             console.log("==============")
@@ -171,5 +172,29 @@ function movieThis() {
 }
 
 function doIt() {
+    fs.readFile("random.txt", "utf8", function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        dataArr = data.split(',')
+        console.log(dataArr)
 
+        action = dataArr[0];
+        process.argv[3] = dataArr[1];
+
+        switch (action) {
+
+            case "concert-this":
+                getConcert();
+                break;
+
+            case "spotify-this-song":
+                spotifySong();
+                break;
+
+            case "movie-this":
+                movieThis();
+                break;
+        }
+    })
 }
