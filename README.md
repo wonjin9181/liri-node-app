@@ -25,3 +25,16 @@ For example, if I wanted to find information about movie then I will type
 
 node liri.js movie-this Avengers
 
+and it will look the sample.png
+
+
+In this app, we use require method to use different npm packages.
+Once we get the users input, we use that value of the input to retrieve data from differnt api, and lay it out to be readable.
+
+My role in the app was to make all the logics work properly.
+
+
+
+
+
+
